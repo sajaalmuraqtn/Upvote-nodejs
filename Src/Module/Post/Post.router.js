@@ -8,7 +8,9 @@ import { auth } from '../../MiddleWare/auth.middleware.js';
 
 const router=Router();
 
-router.get('/',asyncHandler(PostController.GetALLPosts))
+router.get('/',auth,asyncHandler(PostController.GetALLPosts))
 router.post('/create',fileUpload(fileValidation.image).single('image'),auth,validation(PostSchema),asyncHandler(PostController.Create))
+router.patch('/:id/like',auth,asyncHandler(PostController.LikePost))
+router.patch('/:id/unlike',auth,asyncHandler(PostController.unLikePost))
 
 export default router;

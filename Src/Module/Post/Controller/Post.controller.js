@@ -21,3 +21,25 @@ export const Create=async(req,res,next)=>{
    const userPost=await PostModel.create({title,caption,image:{public_id:cloud.public_id,secure_url:cloud.secure_url}})
     return res.json({message:'success',userPost})
 }
+
+
+export const LikePost=async(req,res,next)=>{
+ 
+    const {id}=req.params;//post id
+    const userId=req.user._id;
+   const likePost=await PostModel.findByIdAndUpdate(id,
+     {$addToSet:{like:userId},$pull:{unlike:userId}}
+   ,{new:true});
+    return res.json({message:'success',likePost});
+}
+
+export const unLikePost=async(req,res,next)=>{
+ 
+    const {id}=req.params;//post id
+    const userId=req.user._id;
+   const unlikePost=await PostModel.findByIdAndUpdate(id,
+     {$addToSet:{unlike:userId},$pull:{like:userId}}
+   ,{new:true});
+    return res.json({message:'success',unlikePost});
+}
+
