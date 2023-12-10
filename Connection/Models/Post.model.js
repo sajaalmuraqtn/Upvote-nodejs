@@ -39,5 +39,5 @@ const postSchema=new Schema(
     }
 )
 
-const PostModel=mongoose.model.Post||model('Post',postSchema);
+const PostModel=mongoose.models.Post||model('Post',postSchema);
 export default PostModel;

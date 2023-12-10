@@ -36,5 +36,5 @@ const commentSchema=new Schema(
     }
 )
 
-const CommentModel=mongoose.model.Comment||model('Comment',commentSchema);
+const CommentModel=mongoose.models.Comment||model('Comment',commentSchema);
 export default CommentModel;
