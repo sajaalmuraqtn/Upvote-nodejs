@@ -35,9 +35,17 @@ const postSchema=new Schema(
             require:true
         }
     },{
-        timestamps:true
+        timestamps:true,
+        toJSON:{virtuals:true},
+        toObject:{virtuals:true}
     }
 )
 
+ postSchema.virtual('Comments',
+{
+    localField:'_id',
+    foreignField:'postId',
+    ref:'Comment'
+});
 const PostModel=mongoose.models.Post||model('Post',postSchema);
 export default PostModel;

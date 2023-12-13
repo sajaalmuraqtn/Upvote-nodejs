@@ -1,29 +1,23 @@
-import CommentModel from "../../../../Connection/Models/Comment.model.js";
 import PostModel from "../../../../Connection/Models/Post.model.js";
 import cloudinary from "../../../Services/cloudinary.js";
 
 
 
 export const GetALLPosts=async(req,res)=>{
-    let Posts = await PostModel.find().populate([{
-        path: 'userId',
-        select: 'userName'
-    },{
-    
-        path: 'like',
-        select: 'userName'
-      
-    },{
-        path: 'unlike',
-        select: 'userName'
-      }]);
-      const postList=[];
-      for (const post of Posts) {
-        const comments=await CommentModel.find({postID:post._id});
-        postList.push({post,comments})
-      }
-        return res.json({message:'success',postList})
+       let Posts = await PostModel.find().populate('Comments');
+
+        return res.json({message:'success',Posts})
     }
+export const GetSpecificPost=async(req,res,next)=>{
+       const id=req.params.id;
+       let Post = await PostModel.findById(id).populate('Comments');
+       if (!Post) {
+        return next(new Error('post invalid'));       
+       }
+
+        return res.json({message:'success',Post})
+    }
+    
 
 export const Create=async(req,res,next)=>{
     const {title,caption}=req.body;
