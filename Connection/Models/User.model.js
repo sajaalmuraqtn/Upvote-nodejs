@@ -32,9 +32,17 @@ const userSchema=new Schema(
             type:Object
         }
     },{
-        timestamps:true
+        timestamps:true,
+        toJSON:{virtuals:true},
+        toObject:{virtuals:true}
     }
 )
+
+userSchema.virtual('Posts',{
+    localField:'_id',
+    foreignField:'userId',
+    ref:'Post'
+})
 
 const UserModel=mongoose.models.User||model('User',userSchema);
 export default UserModel;

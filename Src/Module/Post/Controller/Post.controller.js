@@ -20,8 +20,14 @@ export const GetSpecificPost=async(req,res,next)=>{
     
 
 export const Create=async(req,res,next)=>{
-    const {title,caption}=req.body;
+    const {caption}=req.body;
     const id=req.user._id;
+    const title =req.body.title.toLowerCase(); 
+
+    if (await PostModel.findOne({title}).select('title')){
+        return res.json({message:'post title already exist'});
+    }
+    
     if (!req.file) {
         return  next(new Error('please provide a file'))
   }
@@ -29,7 +35,7 @@ export const Create=async(req,res,next)=>{
   const cloud= await cloudinary.uploader.upload(req.file.path,{
           folder:`${process.env.APP_NAME}/user/${id}/PostImage`
   })
-   const userPost=await PostModel.create({title,caption,image:{public_id:cloud.public_id,secure_url:cloud.secure_url}})
+   const userPost=await PostModel.create({title,caption,image:{public_id:cloud.public_id,secure_url:cloud.secure_url} ,userId:id})
     return res.json({message:'success',userPost})
 }
 
@@ -58,3 +64,35 @@ export const unLikePost=async(req,res,next)=>{
     return res.json({message:'success',unlikePost});
 }
 
+export const softDelete=async(req,res,next)=>{
+    const {id}=req.params;//post id
+    const userId=req.user._id;
+    const post= await PostModel.findById(id);
+    if (!post) {
+        return next(new Error('post invalid'));       
+    }
+    if (post.userId!=userId) {
+        return next(new Error('not auth user'));       
+    }
+    post.isDeleted=true;
+    await post.save();
+    return res.json({message:'success',post});
+}
+
+export const hardDelete=async(req,res,next)=>{
+    const {id}=req.params;//post id
+    const userId=req.user._id;
+    const post= await PostModel.findById(id);
+    if (!post) {
+        return next(new Error('post invalid'));       
+    }
+    if (post.userId!=userId) {
+        return next(new Error('not auth user'));       
+    }
+    if ( post.isDeleted!=true) {
+        return next(new Error('can not delete'));       
+    }
+    const hardDeletePost=await PostModel.findByIdAndDelete(id);
+
+    return res.json({message:'success',hardDeletePost});
+}

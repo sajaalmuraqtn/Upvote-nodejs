@@ -17,5 +17,9 @@ router.patch('/:id/unlike',auth,asyncHandler(PostController.unLikePost));
 router.post('/:id/comment',fileUpload(fileValidation.image).single('image'),auth,asyncHandler(CommentController.createComment))
 router.patch('/:id/comment/:commentID/like',auth,asyncHandler(CommentController.likeComment));
 router.patch('/:id/comment/:commentID/unlike',auth,asyncHandler(CommentController.unlikeComment));
+router.patch('/softDelete/:id',auth,asyncHandler(PostController.softDelete));
+router.delete('/hardDelete/:id',auth,asyncHandler(PostController.hardDelete));
+
+
 
 export default router;

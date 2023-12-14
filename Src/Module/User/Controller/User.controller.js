@@ -3,7 +3,7 @@ import UserModel from "../../../../Connection/Models/User.model.js";
 import cloudinary from "../../../Services/cloudinary.js";
 
 export const getUsers=async(req,res)=>{
-        let users =await UserModel.find();
+        let users =await UserModel.find().populate('Posts');
         return res.json({message:'success',users})
 }
 
